@@ -28,6 +28,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 		--with-http_gzip_static_module \
 		--with-threads \
 		--with-file-aio \
+		--with-http_ssl_module \
 	" \
 	&& addgroup -S nginx \
 	&& adduser -D -S -h /var/cache/nginx -s /sbin/nologin -G nginx nginx \
@@ -41,6 +42,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 		curl \
 		gnupg \
 		gd-dev \
+		openssl-dev \
 	&& curl -fSL https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz -o nginx.tar.gz \
 	&& curl -fSL https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz.asc  -o nginx.tar.gz.asc \
 	&& GNUPGHOME="$(mktemp -d)" \
@@ -104,9 +106,10 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& mkdir /static
 
 COPY nginx.conf /etc/nginx/nginx.conf
-COPY nginx.vh.default.conf /etc/nginx/conf.d/default.conf
+#COPY nginx.vh.default.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
+EXPOSE 443
 
 STOPSIGNAL SIGTERM
 
